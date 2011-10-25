@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Bottles;
 using Bottles.Assemblies;
@@ -14,6 +15,11 @@ namespace FubuMVC.Tests.Content
         public StubPackage(string name)
         {
             _name = name;
+        }
+
+        public IEnumerable<Dependency> GetDependencies()
+        {
+            return new List<Dependency>();
         }
 
         public string Name
