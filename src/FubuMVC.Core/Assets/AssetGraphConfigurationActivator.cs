@@ -13,6 +13,13 @@ namespace FubuMVC.Core.Assets
         private readonly AssetGraph _assets;
         private readonly IFileSystem _fileSystem;
 
+        private static readonly IList<string> _configurationFiles = new List<string>();
+
+        public static IEnumerable<string> ConfigurationFiles
+        {
+            get { return _configurationFiles; }
+        }
+
         public AssetGraphConfigurationActivator(AssetGraph assets, IFileSystem fileSystem)
         {
             _assets = assets;
@@ -21,6 +28,8 @@ namespace FubuMVC.Core.Assets
 
         public void Activate(IEnumerable<IPackageInfo> packages, IPackageLog log)
         {
+            _configurationFiles.Clear();
+
             ReadScriptConfig(FubuMvcPackageFacility.GetApplicationPath(), log);
             packages.Each(p => p.ForFolder(BottleFiles.WebContentFolder, folder => ReadScriptConfig(folder, log)));
 
@@ -46,6 +55,8 @@ namespace FubuMVC.Core.Assets
 
         public void ReadFile(string file, IPackageLog log)
         {
+            _configurationFiles.Fill(file.ToFullPath());
+
             var reader = new AssetDslReader(_assets);
             log.Trace("  Reading script directives from {0}", file);
             log.TrapErrors(() =>
